@@ -10,9 +10,6 @@ export class Artist {
 
   @Prop()
   image: string;
-
-  @Prop({ default: false })
-  isPublished: boolean;
 }
 
 export const ArtistSchema = SchemaFactory.createForClass(Artist);
