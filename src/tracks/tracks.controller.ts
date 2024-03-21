@@ -1,17 +1,18 @@
 import {
   Body,
-  Controller, Delete,
+  Controller,Delete,
   Get,
   NotFoundException,
   Param,
   Post,
   Query,
-} from "@nestjs/common";
+} from '@nestjs/common';
 
 import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Track, TrackDocument } from "../schemas/track.schema";
 import { CreateTrackDto } from "./create-track.dto";
+import { query } from "express";
 
 @Controller('tracks')
 export class TracksController {
@@ -22,10 +23,10 @@ export class TracksController {
 
 
   @Get()
-  getAll(@Query() params: any) {
-    if(params.album) {
+  getAll(@Query('albumId') albumId: string) {
+    if(albumId) {
       return this.trackModel
-        .find({album: params.album})
+        .find({album: albumId})
         .sort({ number: 'asc' })
         .populate('album', 'name date');
     }

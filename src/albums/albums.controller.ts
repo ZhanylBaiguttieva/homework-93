@@ -22,10 +22,10 @@ export class AlbumsController {
     private albumModel: Model<AlbumDocument>,
   ) {}
   @Get()
-  getAll(@Query() params: any) {
-    if(params.artist) {
+  getAll(@Query('artistId') artistId: string) {
+    if(artistId) {
       return this.albumModel
-        .find({artist: params.artist})
+        .find({artist: artistId})
         .sort({ date: 'desc' })
         .populate('artist', 'name information')
     }
@@ -55,7 +55,7 @@ export class AlbumsController {
   )
   create(
     @UploadedFile() file: Express.Multer.File,
-    @Body() albumData: CreateAlbumDto
+    @Body() albumData: CreateAlbumDto,
   ) {
     const album = new this.albumModel({
       artist: albumData.artist,
