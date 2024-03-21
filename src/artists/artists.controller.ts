@@ -13,6 +13,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Artist, ArtistDocument } from "../schemas/artist.schema";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateArtistDto } from "./create-artist.dto";
+import { diskStorage } from "multer";
 
 @Controller('artists')
 export class ArtistsController {
@@ -36,7 +37,13 @@ export class ArtistsController {
 
   @Post()
   @UseInterceptors(
-    FileInterceptor('image',{dest:'./public/uploads/artists'})
+    FileInterceptor('image',{storage: diskStorage({
+        destination:'./public/uploads/artists',
+        filename: (_req,file,cb )=> {
+          cb(null,file.originalname);
+        },
+      }),
+    }),
   )
   create(
     @UploadedFile() file: Express.Multer.File,
