@@ -12,7 +12,6 @@ import { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { Track, TrackDocument } from "../schemas/track.schema";
 import { CreateTrackDto } from "./create-track.dto";
-import { query } from "express";
 
 @Controller('tracks')
 export class TracksController {
@@ -24,7 +23,7 @@ export class TracksController {
 
   @Get()
   getAll(@Query('albumId') albumId: string) {
-    if(albumId) {
+    if (albumId) {
       return this.trackModel
         .find({album: albumId})
         .sort({ number: 'asc' })
@@ -37,7 +36,7 @@ export class TracksController {
   }
 
   @Get('/:id')
-  async getOne(@Param('id') id:string){
+  async getOne(@Param('id') id: string){
     const track = await this.trackModel
       .findById(id)
       .populate('album', 'name date');
@@ -63,10 +62,9 @@ export class TracksController {
   }
 
   @Delete('/:id')
-  async delete(@Param('id') id:string) {
+  async delete(@Param('id') id: string) {
     await this.trackModel.findByIdAndDelete(id);
     return {message: 'This track was deleted'}
   }
 }
-
 
