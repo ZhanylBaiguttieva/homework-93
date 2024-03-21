@@ -15,6 +15,7 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { Album, AlbumDocument } from "../schemas/album.schema";
 import { CreateAlbumDto } from "./create-album.dto";
 import { diskStorage } from "multer";
+import { randomUUID } from "crypto";
 
 @Controller('albums')
 export class AlbumsController {
@@ -55,7 +56,7 @@ export class AlbumsController {
     FileInterceptor('image',{storage: diskStorage({
         destination:'./public/uploads/albums',
         filename: (_req,file,cb )=> {
-          cb(null,file.originalname);
+          cb(null, randomUUID()  + file.originalname);
         },
       }),
     }),

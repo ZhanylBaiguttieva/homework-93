@@ -14,6 +14,7 @@ import { Artist, ArtistDocument } from "../schemas/artist.schema";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateArtistDto } from "./create-artist.dto";
 import { diskStorage } from "multer";
+import { randomUUID } from "crypto";
 
 @Controller('artists')
 export class ArtistsController {
@@ -40,7 +41,7 @@ export class ArtistsController {
     FileInterceptor('image',{storage: diskStorage({
         destination:'./public/uploads/artists',
         filename: (_req,file,cb )=> {
-          cb(null,file.originalname);
+          cb(null, randomUUID() + file.originalname);
         },
       }),
     }),
