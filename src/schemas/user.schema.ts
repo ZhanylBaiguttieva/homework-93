@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { genSalt, compare, hash } from 'bcrypt';
+import { Role } from "../users/role.enum";
 const SALT_WORK_FACTOR = 10;
 
 export interface UserMethods {
@@ -21,6 +22,9 @@ export class User {
 
   @Prop({ required: true })
   displayName: string;
+
+  @Prop({ type: 'enum', enum: Role, default: Role.User })
+  role: Role;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
