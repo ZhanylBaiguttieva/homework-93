@@ -18,6 +18,9 @@ import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
 import { TokenAuthGuard } from "../auth/token-auth.guard";
 import { Request } from "express";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { Role } from "../users/role.enum";
+import { RolesGuard } from "../auth/guard/roles.guard";
 
 @Controller('albums')
 export class AlbumsController {
@@ -59,7 +62,7 @@ export class AlbumsController {
     FileInterceptor('image',{storage: diskStorage({
         destination:'./public/uploads/albums',
         filename: (_req,file,cb )=> {
-          cb(null, randomUUID()  + file.originalname);
+          cb(null, randomUUID() + file.originalname);
         },
       }),
     }),
@@ -77,11 +80,12 @@ export class AlbumsController {
     });
     return album.save();
   }
-
+  @Roles(Role.Admin)
+  @UseGuards(TokenAuthGuard, RolesGuard)
   @Delete('/:id')
-  async delete(@Param('id') id:string) {
-    await this.albumModel.findByIdAndDelete(id);
-    return {message: 'This album was deleted'}
+  delete(@Param('id') id: string) {
+    this.albumModel.findByIdAndDelete(id);
+    return { message: 'This album was deleted' };
   }
 }
 

@@ -17,6 +17,9 @@ import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
 import { TokenAuthGuard } from "../auth/token-auth.guard";
 import { Request } from "express";
+import { RolesGuard } from "../auth/guard/roles.guard";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { Role } from "../users/role.enum";
 
 @Controller('artists')
 export class ArtistsController {
@@ -61,9 +64,11 @@ export class ArtistsController {
     return artist.save();
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(TokenAuthGuard, RolesGuard)
   @Delete('/:id')
-  async delete(@Param('id') id:string) {
-    await this.artistModel.findByIdAndDelete(id);
+  delete(@Param('id') id: string) {
+    this.artistModel.findByIdAndDelete(id);
     return {message: 'This artist was deleted'}
   }
 }

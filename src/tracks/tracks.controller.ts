@@ -14,6 +14,9 @@ import { Track, TrackDocument } from "../schemas/track.schema";
 import { CreateTrackDto } from "./create-track.dto";
 import { Request } from "express";
 import { TokenAuthGuard } from "../auth/token-auth.guard";
+import { Roles } from "../auth/decorators/roles.decorator";
+import { Role } from "../users/role.enum";
+import { RolesGuard } from "../auth/guard/roles.guard";
 
 @Controller('tracks')
 export class TracksController {
@@ -21,7 +24,6 @@ export class TracksController {
     @InjectModel(Track.name)
     private trackModel: Model<TrackDocument>,
   ) {}
-
 
   @Get()
   getAll(@Query('albumId') albumId: string) {
@@ -64,9 +66,11 @@ export class TracksController {
     return track.save();
   }
 
+  @Roles(Role.Admin)
+  @UseGuards(TokenAuthGuard, RolesGuard)
   @Delete('/:id')
-  async delete(@Param('id') id: string) {
-    await this.trackModel.findByIdAndDelete(id);
+  delete(@Param('id') id: string) {
+    this.trackModel.findByIdAndDelete(id);
     return {message: 'This track was deleted'}
   }
 }
