@@ -1,8 +1,12 @@
-import { Body, Controller, Post, UnprocessableEntityException } from "@nestjs/common";
+import { Body, Controller, Get, Post, Req, UnprocessableEntityException, UseGuards } from "@nestjs/common";
 import mongoose, { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "../schemas/user.schema";
 import { RegisterUserDto } from "./register-user.dto";
+import { AuthGuard } from "@nestjs/passport";
+import { Request } from "express";
+import { TokenAuthGuard } from "../auth/token-auth.guard";
+
 
 @Controller('users')
 export class UsersController {
@@ -27,4 +31,11 @@ export class UsersController {
       throw e;
     }
   }
+
+  @UseGuards(AuthGuard('local'))
+  @Post('/sessions')
+  async login(@Req() req: Request) {
+    return { message: 'Correct', user: req.user };
+  }
+
 }
