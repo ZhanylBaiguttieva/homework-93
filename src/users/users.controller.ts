@@ -1,11 +1,10 @@
-import { Body, Controller, Get, Post, Req, UnprocessableEntityException, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Req, UnprocessableEntityException, UseGuards } from "@nestjs/common";
 import mongoose, { Model } from "mongoose";
 import { InjectModel } from "@nestjs/mongoose";
 import { User, UserDocument } from "../schemas/user.schema";
 import { RegisterUserDto } from "./register-user.dto";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
-import { TokenAuthGuard } from "../auth/token-auth.guard";
 
 
 @Controller('users')
