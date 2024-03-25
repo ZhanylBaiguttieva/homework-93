@@ -5,8 +5,8 @@ import {
   NotFoundException,
   Param,
   Post,
-  Query,
-  UploadedFile,
+  Query, Req,
+  UploadedFile, UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
@@ -16,6 +16,8 @@ import { Album, AlbumDocument } from "../schemas/album.schema";
 import { CreateAlbumDto } from "./create-album.dto";
 import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
+import { TokenAuthGuard } from "../auth/token-auth.guard";
+import { Request } from "express";
 
 @Controller('albums')
 export class AlbumsController {
@@ -51,6 +53,7 @@ export class AlbumsController {
     return album;
   }
 
+  @UseGuards(TokenAuthGuard)
   @Post()
   @UseInterceptors(
     FileInterceptor('image',{storage: diskStorage({
@@ -64,6 +67,7 @@ export class AlbumsController {
   create(
     @UploadedFile() file: Express.Multer.File,
     @Body() albumData: CreateAlbumDto,
+    @Req() _req: Request,
   ) {
     const album = new this.albumModel({
       artist: albumData.artist,

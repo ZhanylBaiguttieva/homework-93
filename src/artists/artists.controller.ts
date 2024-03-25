@@ -4,8 +4,8 @@ import {
   Get,
   NotFoundException,
   Param,
-  Post,
-  UploadedFile,
+  Post, Req,
+  UploadedFile, UseGuards,
   UseInterceptors
 } from "@nestjs/common";
 import { Model } from "mongoose";
@@ -15,6 +15,8 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateArtistDto } from "./create-artist.dto";
 import { diskStorage } from "multer";
 import { randomUUID } from "crypto";
+import { TokenAuthGuard } from "../auth/token-auth.guard";
+import { Request } from "express";
 
 @Controller('artists')
 export class ArtistsController {
@@ -35,7 +37,7 @@ export class ArtistsController {
     }
     return artist;
   }
-
+  @UseGuards(TokenAuthGuard)
   @Post()
   @UseInterceptors(
     FileInterceptor('image',{storage: diskStorage({
@@ -48,7 +50,8 @@ export class ArtistsController {
   )
   create(
     @UploadedFile() file: Express.Multer.File,
-    @Body() artistData: CreateArtistDto
+    @Body() artistData: CreateArtistDto,
+    @Req() _req: Request,
   ) {
     const artist = new this.artistModel({
       name: artistData.name,
