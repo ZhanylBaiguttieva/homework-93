@@ -23,7 +23,7 @@ export class User {
   @Prop({ required: true })
   displayName: string;
 
-  @Prop({ type: 'enum', enum: Role, default: Role.User })
+  @Prop({ enum: Role, default: Role.User })
   role: Role;
 }
 

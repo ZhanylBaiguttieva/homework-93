@@ -20,6 +20,7 @@ export class UsersController {
         email: registerUserDto.email,
         password: registerUserDto.password,
         displayName: registerUserDto.displayName,
+        role: registerUserDto.role,
       });
       user.generateToken();
       return await user.save();
